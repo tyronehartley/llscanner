@@ -16,6 +16,11 @@ class AstPrinter implements Expr.Visitor<String> {
     }
 
     @Override
+    public String visitSeriesExpr(Expr.Series expr) {//ADDED:
+        return parenthesize("series", expr.elements.toArray(new Expr[0]));
+    }
+
+    @Override
     public String visitLiteralExpr(Expr.Literal expr) {
         if (expr.value == null) return "nil";
         return expr.value.toString();

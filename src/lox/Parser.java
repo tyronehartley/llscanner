@@ -1,5 +1,6 @@
 package lox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static lox.TokenType.*;
@@ -87,6 +88,7 @@ class Parser {
         if (match(FALSE)) return new Expr.Literal(false);
         if (match(TRUE)) return new Expr.Literal(true);
         if (match(NIL)) return new Expr.Literal(null);
+        
 
         if (match(NUMBER, STRING)) {
         return new Expr.Literal(previous().literal);
@@ -97,10 +99,27 @@ class Parser {
         consume(RIGHT_PAREN, "Expect ')' after expression.");
         return new Expr.Grouping(expr);
         }
+        //ADDED: square bracket case
+        if (match(LEFT_BRACKET)) {
+            return arrayLiteral();
+        }
 
         throw error(peek(), "Expect expression.");
   }
 
+    private Expr arrayLiteral() {
+        List<Expr> elements = new ArrayList<>();
+        if (!check(RIGHT_BRACKET)) {
+        do {
+            elements.add(expression());
+        } while (match(COMMA));
+        consume(RIGHT_BRACKET, "Expect ']' after array literal.");
+        return new Expr.Series(elements);
+        }
+        return new Expr.Series(elements);
+        
+    }
+    
     private boolean match(TokenType... types) {
         for (TokenType type : types) {
         if (check(type)) {
