@@ -17,7 +17,8 @@ public class GenerateAst {
         "Grouping : Expr expression",
         "Series   : List<Expr> elements", //ADDED:
         "Literal  : Object value",
-        "Unary    : Token operator, Expr right"
+        "Unary    : Token operator, Expr right"//,
+        //"River    : Literal, Series"
     ));
   }
 

@@ -23,37 +23,15 @@ class Parser {
     }
 
     private Expr expression() {
-        return equality();
+        return term();
     }
 
-    private Expr equality() {
-        Expr expr = comparison();
-
-        while (match(BANG_EQUAL, EQUAL_EQUAL)) {
-        Token operator = previous();
-        Expr right = comparison();
-        expr = new Expr.Binary(expr, operator, right);
-        }
-
-        return expr;
-    }
-
-    private Expr comparison() {
-        Expr expr = term();
-
-        while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
-        Token operator = previous();
-        Expr right = term();
-        expr = new Expr.Binary(expr, operator, right);
-        }
-
-        return expr;
-    }
+    //ADDED: removed comparison() and equality(). epression() now calls term() directly
 
     private Expr term() {
         Expr expr = factor();
 
-        while (match(MINUS, PLUS)) {
+        while (match(MINUS, PLUS, DOWNSTREAM)) { //ADDED: changed GREATER_THAN to DOWNSTREAM, REMOVED LESS_THAN
         Token operator = previous();
         Expr right = factor();
         expr = new Expr.Binary(expr, operator, right);
@@ -75,7 +53,7 @@ class Parser {
     }
 
     private Expr unary() {
-        if (match(BANG, MINUS)) {
+        if (match(MINUS)) {
         Token operator = previous();
         Expr right = unary();
         return new Expr.Unary(operator, right);
@@ -101,19 +79,19 @@ class Parser {
         }
         //ADDED: square bracket case
         if (match(LEFT_BRACKET)) {
-            return arrayLiteral();
+            return series();
         }
 
         throw error(peek(), "Expect expression.");
   }
-
-    private Expr arrayLiteral() {
+    //ADDED series()
+    private Expr series() {
         List<Expr> elements = new ArrayList<>();
         if (!check(RIGHT_BRACKET)) {
         do {
             elements.add(expression());
         } while (match(COMMA));
-        consume(RIGHT_BRACKET, "Expect ']' after array literal.");
+        consume(RIGHT_BRACKET, "Expect ']' to close series");
         return new Expr.Series(elements);
         }
         return new Expr.Series(elements);
