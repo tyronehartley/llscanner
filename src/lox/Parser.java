@@ -14,16 +14,35 @@ class Parser {
     Parser(List<Token> tokens) {
         this.tokens = tokens;
     }
-    Expr parse() {
-        try {
-            return expression();
-        } catch (ParseError error) {
-            return null;
+    List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
+        while (!isAtEnd()) {
+            statements.add(statement());
         }
-    }
+
+    return statements; 
+  }
 
     private Expr expression() {
         return term();
+    }
+
+    private Stmt statement() {
+        if (match(PRINT)) return printStatement();
+    
+        return expressionStatement();
+    }
+
+    private Stmt printStatement() {
+        Expr value = expression();
+        consume(SEMICOLON, "Expect ';' after value.");
+        return new Stmt.Print(value);
+    }
+
+    private Stmt expressionStatement() {
+        Expr expr = expression();
+        consume(SEMICOLON, "Expect ';' after expression.");
+        return new Stmt.Expression(expr);
     }
 
     //ADDED: removed comparison() and equality(). epression() now calls term() directly
@@ -31,7 +50,8 @@ class Parser {
     private Expr term() {
         Expr expr = factor();
 
-        while (match(MINUS, PLUS, DOWNSTREAM)) { //ADDED: changed GREATER_THAN to DOWNSTREAM, REMOVED LESS_THAN
+        //while (match(MINUS, PLUS, DOWNSTREAM)) { //ADDED: changed GREATER_THAN to DOWNSTREAM, REMOVED LESS_THAN
+        while (match(MINUS, PLUS)) {
         Token operator = previous();
         Expr right = factor();
         expr = new Expr.Binary(expr, operator, right);
@@ -85,18 +105,16 @@ class Parser {
         throw error(peek(), "Expect expression.");
   }
     //ADDED series()
-    private Expr series() {
-        List<Expr> elements = new ArrayList<>();
-        if (!check(RIGHT_BRACKET)) {
+private Expr series() {
+    List<Expr> elements = new ArrayList<>();
+    if (!check(RIGHT_BRACKET)) {
         do {
             elements.add(expression());
         } while (match(COMMA));
-        consume(RIGHT_BRACKET, "Expect ']' to close series");
-        return new Expr.Series(elements);
-        }
-        return new Expr.Series(elements);
-        
     }
+    consume(RIGHT_BRACKET, "Expect ']' to close series.");
+    return new Expr.Series(elements);
+}
     
     private boolean match(TokenType... types) {
         for (TokenType type : types) {
