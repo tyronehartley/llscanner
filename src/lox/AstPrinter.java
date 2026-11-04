@@ -1,7 +1,13 @@
 package lox;
 
 import lox.Expr.Assign;
+import lox.Expr.Binary;
+import lox.Expr.Grouping;
+import lox.Expr.Literal;
+import lox.Expr.Logical;
+import lox.Expr.Unary;
 import lox.Expr.Variable;
+import lox.Expr.Visitor;
 
 class AstPrinter implements Expr.Visitor<String> {
     String print(Expr expr) {
@@ -18,10 +24,12 @@ class AstPrinter implements Expr.Visitor<String> {
         return parenthesize("group", expr.expression);
     }
 
+    /* 
     @Override
     public String visitSeriesExpr(Expr.Series expr) {//ADDED:
         return parenthesize("series", expr.elements.toArray(new Expr[0]));
     }
+        */
     @Override
     public String visitLiteralExpr(Expr.Literal expr) {
         if (expr.value == null) return "nil";
@@ -66,5 +74,11 @@ class AstPrinter implements Expr.Visitor<String> {
     public String visitVariableExpr(Variable expr) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'visitVariableExpr'");
+    }
+
+    @Override
+    public String visitLogicalExpr(Logical expr) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'visitLogicalExpr'");
     }
 }
