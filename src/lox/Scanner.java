@@ -33,6 +33,7 @@ class Scanner {
         keywords.put("true",   TRUE);
         keywords.put("var",    VAR);
         keywords.put("while",  WHILE);
+        keywords.put("river",  RIVER);//ADDED
     }
 
     Scanner(String source) {
@@ -63,13 +64,16 @@ class Scanner {
 
             case ',': addToken(COMMA); break;
             case '.': addToken(DOT); break;
-            case '-': addToken(MINUS); break;
+            
             case '+': addToken(PLUS); break;
             case ';': addToken(SEMICOLON); break;
             case '*': addToken(STAR); break; 
-            //ADDED: changed GREATER_THAN to DOWNSTREAM, REMOVED LESS_THAN
-            //case '>': addToken(DOWNSTREAM); break;
-        
+            //ADDED: changed GREATER_THAN to DOWNSTREAM, modified MINUS case
+
+            //case '-': addToken(MINUS); break;
+            case '-':
+                addToken(match('>') ? DOWNSTREAM : MINUS);
+                break;
             //ch7
             case '!':
                 addToken(match('=') ? BANG_EQUAL : BANG);
