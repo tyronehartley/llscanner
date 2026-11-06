@@ -8,6 +8,7 @@ abstract class Expr {
     R visitBinaryExpr(Binary expr);
     R visitCallExpr(Call expr);
     R visitGroupingExpr(Grouping expr);
+    R visitSeriesExpr(Series expr);
     R visitLiteralExpr(Literal expr);
     R visitLogicalExpr(Logical expr);
     R visitUnaryExpr(Unary expr);
@@ -70,6 +71,18 @@ abstract class Expr {
     }
 
     final Expr expression;
+  }
+  static class Series extends Expr {
+    Series(List<Expr> elements) {
+      this.elements = elements;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitSeriesExpr(this);
+    }
+
+    final List<Expr> elements;
   }
   static class Literal extends Expr {
     Literal(Object value) {

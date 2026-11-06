@@ -1,6 +1,9 @@
 package lox;
 
 import java.util.List;
+
+import lox.Expr.Series;
+
 import java.util.ArrayList;
 //import lox.Expr.Series;
 
@@ -271,6 +274,16 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
 
         return function.call(this, arguments);
+    }
+
+    //ADDED: Series is just an array
+    @Override
+    public Object visitSeriesExpr(Series expr) {
+        List<Object> elements = new ArrayList<>();
+        for (Expr element : expr.elements) {
+            elements.add(evaluate(element));
+        }
+        return elements;
     }
 
 }

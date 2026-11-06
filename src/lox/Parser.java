@@ -336,26 +336,27 @@ class Parser {
         return new Expr.Grouping(expr);
         }
         //ADDED: square bracket case
-        /*
+        
         if (match(LEFT_BRACKET)) {
             //return series();
-        }*/
+            return Series();
+        }
 
         throw error(peek(), "Expect expression.");
   }
-    //ADDED series()
-/* 
-    private Expr series() {
+    //ADDED Series()
+
+    private Expr Series() {
     List<Expr> elements = new ArrayList<>();
     if (!check(RIGHT_BRACKET)) {
         do {
             elements.add(expression());
         } while (match(COMMA));
     }
-    consume(RIGHT_BRACKET, "Expect ']' to close series.");
+    consume(RIGHT_BRACKET, "Expect ']' to close Series.");
     return new Expr.Series(elements);
 }
-*/
+
     
     private boolean match(TokenType... types) {
         for (TokenType type : types) {

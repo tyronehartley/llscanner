@@ -1,3 +1,5 @@
+ 'c:\Users\Tyrone\.vscode\extensions\redhat.java-1.58.0-win32-x64\jre\25.0.4.1-win32-x86_64\bin\java.exe' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'H:\3000\llscanner\bin' 'tool.GenerateAst' src/lox 
+
 # Marked Items
 
 ## Simple river flows
