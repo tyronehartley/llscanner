@@ -7,7 +7,7 @@ enum TokenType {
   
   //ADDED: square brackets, downstream(>)
   RIGHT_BRACKET, LEFT_BRACKET,
-  //TODO: DOWNSTREAM,
+  DOWNSTREAM, RIVER,
 
   // One or two character tokens.
   BANG, BANG_EQUAL,

@@ -1,4 +1,8 @@
-var a = [5,5];
-var b = [2,2];
-print a;
-print b;
+river up = [2,2,2,2,2];
+river down = [1,1,1,1,1];
+river side = [1,1,1,1,2];
+river output = [];
+[up,side] -> down -> output;
+print up;
+print down;
+print output;

@@ -12,6 +12,8 @@ abstract class Stmt {
     R visitReturnStmt(Return stmt);
     R visitVarStmt(Var stmt);
     R visitWhileStmt(While stmt);
+    R visitRiverStmt(River stmt);
+    R visitDownstreamStmt(Downstream stmt);
   }
   static class Block extends Stmt {
     Block(List<Stmt> statements) {
@@ -122,6 +124,32 @@ abstract class Stmt {
 
     final Expr condition;
     final Stmt body;
+  }
+  static class River extends Stmt {
+    River(Token name, List<Expr> series) {
+      this.name = name;
+      this.series = series;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitRiverStmt(this);
+    }
+
+    final Token name;
+    final List<Expr> series;
+  }
+  static class Downstream extends Stmt {
+    Downstream(List<Token> chain) {
+      this.chain = chain;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitDownstreamStmt(this);
+    }
+
+    final List<Token> chain;
   }
 
   abstract <R> R accept(Visitor<R> visitor);

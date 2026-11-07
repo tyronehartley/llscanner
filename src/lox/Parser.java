@@ -32,12 +32,48 @@ class Parser {
         try {
             if (match(FUN)) return function("function");
             if (match(VAR)) return varDeclaration();
+            if (match(RIVER)) return riverDeclaration();
+            if (check(IDENTIFIER) && checkNext(DOWNSTREAM)) return downstreamStatement();
 
             return statement();
             } catch (ParseError error) {
             synchronize();
             return null;
         }
+    }
+
+    private boolean checkNext(TokenType type) {
+        if (isAtEnd()) return false;
+        if (tokens.get(current + 1).type == EOF) return false;
+        return tokens.get(current + 1).type == type;
+    }
+
+    private Stmt downstreamStatement() {
+        List<Token> chain = new ArrayList<>();
+        chain.add(consume(IDENTIFIER, "Expect river name."));
+        while (match(DOWNSTREAM)) {
+            chain.add(consume(IDENTIFIER, "Expect river name after '->'."));
+        }
+        consume(SEMICOLON, "Expect ';' after flow.");
+        return new Stmt.Downstream(chain);
+    }
+
+
+    private Stmt riverDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect river name.");
+        consume(EQUAL, "Expect '=' after river name.");
+        consume(LEFT_BRACKET, "Expect '[' to start catchment.");
+
+        List<Expr> series = new ArrayList<>();
+        if (!check(RIGHT_BRACKET)) {
+            do {
+            series.add(expression());
+            } while (match(COMMA));
+        }
+
+        consume(RIGHT_BRACKET, "Expect ']' after catchment.");
+        consume(SEMICOLON, "Expect ';' after river declaration.");
+        return new Stmt.River(name, series);
     }
 
     private Stmt statement() {

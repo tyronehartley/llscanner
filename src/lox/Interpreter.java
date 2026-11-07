@@ -3,6 +3,8 @@ package lox;
 import java.util.List;
 
 import lox.Expr.Series;
+import lox.Stmt.Downstream;
+import lox.Stmt.River;
 
 import java.util.ArrayList;
 //import lox.Expr.Series;
@@ -214,7 +216,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Object right = evaluate(expr.right); 
 
         switch (expr.operator.type) {
-        //We are using '>' not as a comparison operator but as part of our river syntax
         case GREATER:
             checkNumberOperands(expr.operator, left, right);
             return (double)left > (double)right;
@@ -284,6 +285,37 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             elements.add(evaluate(element));
         }
         return elements;
+    }
+
+    @Override
+    public Void visitRiverStmt(Stmt.River stmt) {
+        List<Double> catchment = new ArrayList<>();
+        for (Expr day : stmt.series) {
+            Object value = evaluate(day);
+            if (!(value instanceof Double)) {
+            throw new RuntimeError(stmt.name, "River catchment values must be numbers.");
+            }
+            catchment.add((Double) value);
+        }
+
+        environment.define(stmt.name.lexeme, new LoxRiver(stmt.name.lexeme, catchment));
+        return null;
+    }
+
+    @Override
+    public Void visitDownstreamStmt(Stmt.Downstream stmt) {
+        for (int i = 0; i < stmt.chain.size() - 1; i++) {
+            Token from = stmt.chain.get(i);
+            Token to = stmt.chain.get(i + 1);
+            Object a = environment.get(from);
+            Object b = environment.get(to);
+
+            if (!(a instanceof LoxRiver)) throw new RuntimeError(from, "Only rivers can flow downstream.");
+            if (!(b instanceof LoxRiver)) throw new RuntimeError(to, "Only rivers can receive flow.");
+
+            ((LoxRiver) b).connect((LoxRiver) a);
+        }
+    return null;
     }
 
 }
