@@ -185,7 +185,7 @@ class Parser {
     }
 
     private Expr assignment() {
-        Expr expr = or();
+        Expr expr = downstream();
 
         if (match(EQUAL)) {
         Token equals = previous();
@@ -199,6 +199,17 @@ class Parser {
         error(equals, "Invalid assignment target."); 
         }
 
+        return expr;
+    }
+
+    private Expr downstream() {
+        Expr expr = or();  
+
+        while (match(DOWNSTREAM)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Downstream(expr, operator, right);
+        }
         return expr;
     }
 
@@ -227,7 +238,7 @@ class Parser {
     }
 
     //ADDED: removed comparison() and equality(). expression() now calls term() directly
-    private Expr equality() { //TODO
+    private Expr equality() { 
         Expr expr = comparison();
 
         while (match(BANG_EQUAL, EQUAL_EQUAL)) {
@@ -239,7 +250,7 @@ class Parser {
         return expr;
     }
 
-    private Expr comparison() {//TODO
+    private Expr comparison() {
         Expr expr = term();
 
         while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
@@ -336,26 +347,25 @@ class Parser {
         return new Expr.Grouping(expr);
         }
         //ADDED: square bracket case
-        /*
         if (match(LEFT_BRACKET)) {
-            //return series();
-        }*/
+            return series();
+        }
 
         throw error(peek(), "Expect expression.");
   }
     //ADDED series()
-/* 
+
     private Expr series() {
-    List<Expr> elements = new ArrayList<>();
-    if (!check(RIGHT_BRACKET)) {
-        do {
-            elements.add(expression());
-        } while (match(COMMA));
+        List<Expr> elements = new ArrayList<>();
+        if (!check(RIGHT_BRACKET)) {
+            do {
+                elements.add(expression());
+            } while (match(COMMA));
+        }
+        consume(RIGHT_BRACKET, "Expect ']' to close series.");
+        return new Expr.Series(elements);
     }
-    consume(RIGHT_BRACKET, "Expect ']' to close series.");
-    return new Expr.Series(elements);
-}
-*/
+
     
     private boolean match(TokenType... types) {
         for (TokenType type : types) {

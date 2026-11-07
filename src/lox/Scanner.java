@@ -63,12 +63,13 @@ class Scanner {
 
             case ',': addToken(COMMA); break;
             case '.': addToken(DOT); break;
-            case '-': addToken(MINUS); break;
             case '+': addToken(PLUS); break;
             case ';': addToken(SEMICOLON); break;
             case '*': addToken(STAR); break; 
             //ADDED: changed GREATER_THAN to DOWNSTREAM, REMOVED LESS_THAN
-            //case '>': addToken(DOWNSTREAM); break;
+            case '-': 
+                addToken(match('>') ? DOWNSTREAM : MINUS);
+                break;
         
             //ch7
             case '!':

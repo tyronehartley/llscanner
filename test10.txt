@@ -1,0 +1,16 @@
+//googong > queanbeyan; 
+//(queanbeyan + upper_molongolo + jerrambarra) > central_molongolo >  lower_molongolo
+var googong = 1;
+var queanbeyan = 1;
+var upper_molongolo = 1;
+var jerrambarra = 1;
+var central_molongolo = 1;
+var lower_molongolo = 1;
+googong -> queanbeyan;
+(queanbeyan + upper_molongolo + jerrambarra) -> central_molongolo -> lower_molongolo;
+print googong;
+print queanbeyan;
+print upper_molongolo;
+print jerrambarra;
+print central_molongolo;
+print lower_molongolo;

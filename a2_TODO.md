@@ -2,8 +2,8 @@
 
 ## Simple river flows
 
-- Language can interpret an expression describing simple river flows. Interpreter outputs something when it is finished indicating at least one of the flows in the system. 
-- We recommend outputting all named flows, but you could have a special output for one expression. 
+- Language can interpret an expression describing simple river flows. Interpreter outputs something when it is finished indicating at least one of the flows in the system.
+- We recommend outputting all named flows, but you could have a special output for one expression.
 - Rainfall and river catchment size should be user-definable.
 
 ## Multi-day flow modelling

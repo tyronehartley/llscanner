@@ -1,8 +1,9 @@
 package lox;
 
 import java.util.List;
+import lox.Expr.Series;
+import lox.LoxRiver;
 import java.util.ArrayList;
-//import lox.Expr.Series;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     final Environment globals = new Environment();
@@ -229,10 +230,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             checkNumberOperands(expr.operator, left, right);
             return (double)left - (double)right;
             
-        case PLUS:
-            if (left instanceof Double && right instanceof Double) {return (double)left + (double)right;} 
-            if (left instanceof String && right instanceof String) {return (String)left + (String)right;
-                
+        case PLUS:{
+                if (left instanceof Double && right instanceof Double) {return (double)left + (double)right;} 
+                if (left instanceof String && right instanceof String) {return (String)left + (String)right;}             
             }
             throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
             
@@ -271,6 +271,35 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
 
         return function.call(this, arguments);
+    }
+
+    @Override
+    public Object visitDownstreamExpr(Expr.Downstream expr) {
+        Object value = evaluate(expr.upstr);
+        Token name = ((Expr.Variable) expr.downstr).name;
+        Object target = environment.get(name);
+
+        if (value instanceof LoxRiver && target instanceof LoxRiver) {
+            ((LoxRiver) target).receive((LoxRiver) value);
+            return target;
+        }
+
+        if (value instanceof Double && target instanceof Double) {
+            Double result = (Double) target + (Double) value;
+            environment.assign(name, result);
+            return result;              // the new total flows on to the next river
+        }
+
+        throw new RuntimeError(expr.downstream, "Operands of '->' must both be numbers or both be rivers.");
+    }
+
+    @Override
+    public Object visitSeriesExpr(Series expr) {
+        List<Object> values = new ArrayList<>();
+        for (Expr element : expr.elements) {
+            values.add(evaluate(element));
+        }
+        return values;
     }
 
 }

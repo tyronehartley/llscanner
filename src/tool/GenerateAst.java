@@ -17,11 +17,12 @@ public class GenerateAst {
         "Binary   : Expr left, Token operator, Expr right",
         "Call     : Expr callee, Token paren, List<Expr> arguments",
         "Grouping : Expr expression",
-        //"Series   : List<Expr> elements", //ADDED: 
+        "Series   : List<Expr> elements", //ADDED: 
         "Literal  : Object value",
         "Logical  : Expr left, Token operator, Expr right",
         "Unary    : Token operator, Expr right",
-        "Variable : Token name"
+        "Variable : Token name",
+        "Downstream : Expr upstr, Token downstream, Expr downstr"
         //"River    : Literal, Series"
     ));
 
@@ -35,6 +36,8 @@ public class GenerateAst {
         "Return     : Token keyword, Expr value",
         "Var        : Token name, Expr initializer",
         "While      : Expr condition, Stmt body"
+        //"Downstream : Token upstr, Token downstream, Token downstr"
+        
     ));
   }
 

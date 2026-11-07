@@ -8,10 +8,12 @@ abstract class Expr {
     R visitBinaryExpr(Binary expr);
     R visitCallExpr(Call expr);
     R visitGroupingExpr(Grouping expr);
+    R visitSeriesExpr(Series expr);
     R visitLiteralExpr(Literal expr);
     R visitLogicalExpr(Logical expr);
     R visitUnaryExpr(Unary expr);
     R visitVariableExpr(Variable expr);
+    R visitDownstreamExpr(Downstream expr);
   }
   static class Assign extends Expr {
     Assign(Token name, Expr value) {
@@ -71,6 +73,18 @@ abstract class Expr {
 
     final Expr expression;
   }
+  static class Series extends Expr {
+    Series(List<Expr> elements) {
+      this.elements = elements;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitSeriesExpr(this);
+    }
+
+    final List<Expr> elements;
+  }
   static class Literal extends Expr {
     Literal(Object value) {
       this.value = value;
@@ -124,6 +138,22 @@ abstract class Expr {
     }
 
     final Token name;
+  }
+  static class Downstream extends Expr {
+    Downstream(Expr upstr, Token downstream, Expr downstr) {
+      this.upstr = upstr;
+      this.downstream = downstream;
+      this.downstr = downstr;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitDownstreamExpr(this);
+    }
+
+    final Expr upstr;
+    final Token downstream;
+    final Expr downstr;
   }
 
   abstract <R> R accept(Visitor<R> visitor);

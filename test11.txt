@@ -1,0 +1,5 @@
+//googong > queanbeyan; 
+//(queanbeyan + upper_molongolo + jerrambarra) > central_molongolo >  lower_molongolo
+var googong = River("googong", 1);
+googong.addCatchment(1);
+print googong.flow;
